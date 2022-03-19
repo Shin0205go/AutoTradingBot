@@ -1,13 +1,22 @@
 import { GetBalance } from "./getBalance";
+import { Authorize } from "./authorize";
+import { ChildOrder } from "./childOrder";
 
 class Main {
+  key = 'XXXX'
+  secret = 'XXXX';
+
   constructor() {
-    // serverModuleの中のServerAPIクラスのインスタンスを作成
-    const balance = new GetBalance();
+    const auth = new Authorize(this.key, this.secret);
+    // const balance = new GetBalance();
+    const childorder = new ChildOrder();
     // ServerAPIの関数を実行
-    const options = balance.initAuthorize();
-    const log = balance.requestGetBalance(options);
-    console.log(log);
+    // const bal = auth.init(balance.path, balance.method);
+    // const options = auth.init(balance.path, balance.method);
+    const options = auth.init(childorder.path, childorder.method, childorder.body);
+    // const options = auth.init(balance.path, balance.method);
+
+    const request = auth.request(options);
   }
 }
 
