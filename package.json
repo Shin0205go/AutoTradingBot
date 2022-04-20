@@ -28,6 +28,11 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@types/request": "^2.48.8"
+    "@types/request": "^2.48.8",
+    "@types/request-promise": "^4.1.48",
+    "request-promise": "^4.2.6"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
