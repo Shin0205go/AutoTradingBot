@@ -1,6 +1,7 @@
-import { ChildOrder } from "./childOrder";
-import { Authorize } from "./authorize";
-import { OneHalfTrader } from "./oneHalfTrader";
+import { ChildOrder } from "../api/childOrder";
+import { Authorize } from "../api/authorize";
+import { OneHalfTrader } from "../trader/oneHalfTrader";
+import { GetChildOrders } from "../api/getChildOrders";
 
 // describe('通信を送る場合のテスト', () => {
 //     let httpRequestGetMock: jest.SpyInstance;
@@ -54,18 +55,19 @@ test('trade()', async () => {
         "./authorize"
     );
 
-    const mockedChilOrder: ChildOrder = new ChildOrder();
+    const mockedChildOrder: ChildOrder = new ChildOrder();
     const mockedAuthorize: Authorize = new Authorize("testKey", "testSecret");
+    const mockedGetChildOrders : GetChildOrders = new GetChildOrders(mockedAuthorize);
     //mockedAuthorizeのモックrequestメソッドを作成
     mockedAuthorize.request = jest.fn().mockImplementation(() => {
         return { "child_order_acceptance_id": "JRF20220320-131629-154272" }
     }
     );
-    const oneHalfTrader = new OneHalfTrader(mockedAuthorize, mockedChilOrder);
+    const oneHalfTrader = new OneHalfTrader(mockedAuthorize, mockedChildOrder, mockedGetChildOrders);
 
     //ここからtrade()の実装
     var n = 1;
-    mockedChilOrder.body.size = 0.001;
+    mockedChildOrder.body.size = 0.001;
     // console.log('スタート');
     // for (var i = 0; i < 100; i++) {
     //TODO: forループをやめる。

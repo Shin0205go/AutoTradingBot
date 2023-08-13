@@ -3,3 +3,5 @@ logs
 *.log
 .npm
 node_modules/
+src/server/secret
+dist/

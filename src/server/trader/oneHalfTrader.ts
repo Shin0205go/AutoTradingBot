@@ -1,12 +1,14 @@
-import { Trader } from "./trader";
-import { Authorize, Options } from "./authorize";
-import { ChildOrder } from "./childOrder";
-import { GetChildOrders } from "./getChildOrders";
+import { Trader } from "../interface/trader";
+import { Authorize, Options } from "../api/authorize";
+import { ChildOrder } from "../api/childOrder";
+import { GetChildOrders } from "../api/getChildOrders";
+import { GetBalance } from "../api/getBalance"; 
 
 export class OneHalfTrader implements Trader {
     auth: Authorize;
     childOrder: ChildOrder;
     getChildOrders: GetChildOrders;
+    getBalance: GetBalance = new GetBalance();
     half: number;
 
     constructor(auth: Authorize, childOrder: ChildOrder, getChildOrders: GetChildOrders) {
