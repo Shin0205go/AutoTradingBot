@@ -14,7 +14,9 @@
     "start": "node .",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
-    "test:game": "ts-node src/server/test/testGameSystem.ts"
+    "test:game": "ts-node src/server/test/testGameSystem.ts",
+    "start:ui": "ts-node src/server/server.ts",
+    "dev:ui": "ts-node-dev --respawn src/server/server.ts"
   },
   "keywords": [],
   "author": "",

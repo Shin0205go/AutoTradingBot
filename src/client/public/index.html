@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTradingBot - キャラクター選択</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AutoTradingBot</h1>
+            <h2>トレーダーキャラクター選択</h2>
+        </header>
+        
+        <main>
+            <div class="character-selection">
+                <div id="character-list" class="character-grid">
+                    <!-- キャラクターカードがJSで動的に挿入されます -->
+                </div>
+            </div>
+            
+            <div class="character-details" id="character-details">
+                <h3>キャラクター詳細</h3>
+                <div id="selected-character-info">
+                    <p>左側からキャラクターを選択してください</p>
+                </div>
+                <div class="action-buttons">
+                    <button id="select-character-btn" class="btn btn-primary" disabled>このキャラクターを選択</button>
+                    <button id="start-trading-btn" class="btn btn-secondary" disabled>トレード開始</button>
+                </div>
+            </div>
+        </main>
+        
+        <div id="leaderboard" class="leaderboard">
+            <h3>リーダーボード</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>キャラクター</th>
+                        <th>レベル</th>
+                        <th>勝率</th>
+                        <th>総利益</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- リーダーボードデータがJSで動的に挿入されます -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="trading-simulator" class="trading-simulator hidden">
+            <h3>トレードシミュレーター</h3>
+            <div class="market-price-container">
+                <h4>現在の市場価格</h4>
+                <div class="market-price-info" id="market-price-info">
+                    <div class="price-loading">価格情報を取得中...</div>
+                </div>
+            </div>
+            <div class="trader-status">
+                <div class="trader-info" id="trader-info">
+                    <!-- トレーダー情報 -->
+                </div>
+                <div class="level-progress">
+                    <div class="level-bar-container">
+                        <div class="level-bar" id="level-bar"></div>
+                    </div>
+                    <div class="level-info" id="level-info">レベル 1 (0/1000 XP)</div>
+                </div>
+            </div>
+            <div class="trading-log" id="trading-log">
+                <!-- トレードログがJSで動的に挿入されます -->
+            </div>
+            <div class="trading-controls">
+                <button id="simulate-trade-btn" class="btn btn-primary">トレードシミュレーション</button>
+                <button id="close-trading-btn" class="btn btn-secondary">シミュレーションを終了</button>
+            </div>
+            
+            <div class="trade-history-section">
+                <h4>トレード履歴</h4>
+                <div class="trade-history-filters">
+                    <select id="history-filter" class="history-filter">
+                        <option value="all">すべて</option>
+                        <option value="profit">利益のみ</option>
+                        <option value="loss">損失のみ</option>
+                    </select>
+                </div>
+                <div class="trade-history-table-container">
+                    <table class="trade-history-table">
+                        <thead>
+                            <tr>
+                                <th>日時</th>
+                                <th>取引結果</th>
+                                <th>獲得XP</th>
+                                <th>特殊能力</th>
+                                <th>市場状況</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trade-history-body">
+                            <!-- トレード履歴がJSで動的に挿入されます -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 AutoTradingBot - ゲームトレーディングシステム</p>
+        </footer>
+    </div>
+    
+    <script src="../js/characterSelection.js"></script>
+</body>
+</html>
