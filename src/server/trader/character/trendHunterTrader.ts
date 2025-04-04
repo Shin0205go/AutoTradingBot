@@ -123,11 +123,11 @@ export class TrendHunterTrader extends BaseCharacterTrader {
                 
                 if (obj && obj.child_order_acceptance_id) {
                     this.calcProfit(obj.child_order_acceptance_id)
-                        .then(profit => {
+                        .then((profit: number) => {
                             console.log(`${this.attributes.name}の取引完了! 利益: ${profit}円`);
                             resolve(profit);
                         })
-                        .catch(err => {
+                        .catch((err: Error) => {
                             console.error(`${this.attributes.name}の利益計算中にエラー: ${err}`);
                             reject(err);
                         });
@@ -135,7 +135,7 @@ export class TrendHunterTrader extends BaseCharacterTrader {
                     console.log(`${this.attributes.name}の注文が受け付けられませんでした。`);
                     resolve(0);
                 }
-            }).catch(err => {
+            }).catch((err: Error) => {
                 console.error(`${this.attributes.name}の注文中にエラー: ${err}`);
                 reject(err);
             });
