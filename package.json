@@ -39,6 +39,6 @@
     "request-promise": "^4.2.6"
   },
   "jest": {
-    "testEnvironment": "node"
+    "preset": "./jest.config.js"
   }
 }
