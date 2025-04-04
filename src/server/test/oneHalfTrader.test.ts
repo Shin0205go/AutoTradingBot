@@ -49,10 +49,10 @@ import { GetChildOrders } from "../api/getChildOrders";
 // describe('oneHalfTraderのユニットテスト', () => {
 test('trade()', async () => {
     const { ChildOrder: MockedChildOrder } = jest.requireActual(
-        "./childOrder"
+        "../api/childOrder"
     );
     const { Authorize: MockedAuthorize } = jest.requireActual(
-        "./authorize"
+        "../api/authorize"
     );
 
     const mockedChildOrder: ChildOrder = new ChildOrder();
