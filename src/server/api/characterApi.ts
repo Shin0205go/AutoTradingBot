@@ -61,41 +61,49 @@ router.post('/select-character', (req, res) => {
     }
 });
 
-router.post('/start-battle', (req, res) => {
+router.post('/simulate-trade', (req, res) => {
     try {
-        const { characterId, opponentId } = req.body;
+        const { characterId, level } = req.body;
         
-        if (!characterId || !opponentId) {
-            return res.status(400).json({ error: 'Character ID and opponent ID are required' });
+        if (!characterId) {
+            return res.status(400).json({ error: 'Character ID is required' });
         }
         
+        const baseAmount = 10000 + (parseInt(level || '1') * 5000);
+        const volatility = 0.8;
+        const profit = Math.floor(baseAmount * (1 + ((Math.random() * 2 - 1) * volatility)));
         
-        const battleResult = {
-            rounds: [
-                {
-                    characterProfit: Math.floor(Math.random() * 50000) - 10000,
-                    opponentProfit: Math.floor(Math.random() * 50000) - 10000,
-                    winner: Math.random() > 0.5 ? 'character' : 'opponent'
-                },
-                {
-                    characterProfit: Math.floor(Math.random() * 50000) - 10000,
-                    opponentProfit: Math.floor(Math.random() * 50000) - 10000,
-                    winner: Math.random() > 0.5 ? 'character' : 'opponent'
-                },
-                {
-                    characterProfit: Math.floor(Math.random() * 50000) - 10000,
-                    opponentProfit: Math.floor(Math.random() * 50000) - 10000,
-                    winner: Math.random() > 0.5 ? 'character' : 'opponent'
-                }
-            ],
-            winner: Math.random() > 0.5 ? 'character' : 'opponent',
-            specialAbilityActivated: Math.random() > 0.7
+        const specialAbilityChance = 0.1 + (parseInt(level || '1') * 0.05);
+        const specialAbilityActivated = Math.random() < specialAbilityChance;
+        
+        let finalProfit = profit;
+        if (specialAbilityActivated) {
+            const bonusMultiplier = 1.5;
+            finalProfit = Math.floor(profit * bonusMultiplier);
+        }
+        
+        let xpGained = 0;
+        if (finalProfit > 0) {
+            xpGained = Math.floor(finalProfit / 100); // 利益100円ごとに1XP
+        } else {
+            xpGained = Math.floor(Math.abs(finalProfit) / 500); // 損失500円ごとに1XP
+        }
+        
+        const tradeResult = {
+            profit: finalProfit,
+            xpGained: xpGained,
+            specialAbilityActivated: specialAbilityActivated,
+            tradeDetails: {
+                timestamp: new Date().toISOString(),
+                marketCondition: Math.random() > 0.5 ? 'bullish' : 'bearish',
+                volatility: volatility
+            }
         };
         
-        res.json(battleResult);
+        res.json(tradeResult);
     } catch (error) {
-        console.error('Error starting battle:', error);
-        res.status(500).json({ error: 'Failed to start battle' });
+        console.error('Error simulating trade:', error);
+        res.status(500).json({ error: 'Failed to simulate trade' });
     }
 });
 
