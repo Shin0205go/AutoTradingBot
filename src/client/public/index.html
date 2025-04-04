@@ -70,6 +70,33 @@
                 <button id="simulate-trade-btn" class="btn btn-primary">トレードシミュレーション</button>
                 <button id="close-trading-btn" class="btn btn-secondary">シミュレーションを終了</button>
             </div>
+            
+            <div class="trade-history-section">
+                <h4>トレード履歴</h4>
+                <div class="trade-history-filters">
+                    <select id="history-filter" class="history-filter">
+                        <option value="all">すべて</option>
+                        <option value="profit">利益のみ</option>
+                        <option value="loss">損失のみ</option>
+                    </select>
+                </div>
+                <div class="trade-history-table-container">
+                    <table class="trade-history-table">
+                        <thead>
+                            <tr>
+                                <th>日時</th>
+                                <th>取引結果</th>
+                                <th>獲得XP</th>
+                                <th>特殊能力</th>
+                                <th>市場状況</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trade-history-body">
+                            <!-- トレード履歴がJSで動的に挿入されます -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         
         <footer>

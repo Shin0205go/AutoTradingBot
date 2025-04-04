@@ -21,6 +21,7 @@ let currentCharacter = null;
 let currentLevel = 1;
 let currentXP = 0;
 let xpToNextLevel = 1000;
+let tradeHistory = [];
 
 const API_BASE_URL = '/api';
 const ENDPOINTS = {
@@ -282,6 +283,18 @@ async function simulateTrade() {
         addTradingLogEntry(`+${xpGained} XP獲得！（失敗からの学び）`, false);
     }
     
+    const tradeRecord = {
+        timestamp: new Date(),
+        profit: finalProfit,
+        xpGained: xpGained,
+        specialAbilityActivated: specialAbilityActivated,
+        marketCondition: Math.random() > 0.5 ? 'bullish' : 'bearish',
+        level: currentLevel
+    };
+    tradeHistory.unshift(tradeRecord); // 最新のトレードを先頭に追加
+    
+    renderTradeHistory();
+    
     currentXP += xpGained;
     
     if (currentXP >= xpToNextLevel) {
@@ -326,6 +339,74 @@ function addTradingLogEntry(text, highlight = false, className = '') {
     tradingLogEl.scrollTop = tradingLogEl.scrollHeight;
 }
 
+function renderTradeHistory(filter = 'all') {
+    const historyTableBody = document.getElementById('trade-history-body');
+    if (!historyTableBody) return;
+    
+    historyTableBody.innerHTML = '';
+    
+    if (tradeHistory.length === 0) {
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 5;
+        emptyCell.className = 'trade-history-empty';
+        emptyCell.textContent = 'トレード履歴はまだありません。トレードを開始してください。';
+        emptyRow.appendChild(emptyCell);
+        historyTableBody.appendChild(emptyRow);
+        return;
+    }
+    
+    let filteredHistory = [...tradeHistory];
+    if (filter === 'profit') {
+        filteredHistory = tradeHistory.filter(trade => trade.profit > 0);
+    } else if (filter === 'loss') {
+        filteredHistory = tradeHistory.filter(trade => trade.profit <= 0);
+    }
+    
+    filteredHistory.forEach(trade => {
+        const row = document.createElement('tr');
+        
+        const timestampCell = document.createElement('td');
+        timestampCell.textContent = formatDate(trade.timestamp);
+        row.appendChild(timestampCell);
+        
+        const profitCell = document.createElement('td');
+        profitCell.textContent = formatCurrency(trade.profit);
+        profitCell.className = trade.profit > 0 ? 'profit' : 'loss';
+        row.appendChild(profitCell);
+        
+        const xpCell = document.createElement('td');
+        xpCell.textContent = `+${trade.xpGained} XP`;
+        row.appendChild(xpCell);
+        
+        const abilityCell = document.createElement('td');
+        if (trade.specialAbilityActivated) {
+            abilityCell.textContent = '発動';
+            abilityCell.className = 'special-ability-active';
+        } else {
+            abilityCell.textContent = '未発動';
+        }
+        row.appendChild(abilityCell);
+        
+        const marketCell = document.createElement('td');
+        marketCell.textContent = trade.marketCondition === 'bullish' ? '強気相場' : '弱気相場';
+        row.appendChild(marketCell);
+        
+        historyTableBody.appendChild(row);
+    });
+}
+
+function formatDate(date) {
+    return new Date(date).toLocaleString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
 function setupEventListeners() {
     selectCharacterBtn.addEventListener('click', async () => {
         if (!selectedCharacterId) return;
@@ -346,6 +427,13 @@ function setupEventListeners() {
         tradingSimulatorEl.classList.add('hidden');
         tradingInProgress = false;
     });
+    
+    const historyFilter = document.getElementById('history-filter');
+    if (historyFilter) {
+        historyFilter.addEventListener('change', (e) => {
+            renderTradeHistory(e.target.value);
+        });
+    }
 }
 
 function formatCurrency(amount) {
