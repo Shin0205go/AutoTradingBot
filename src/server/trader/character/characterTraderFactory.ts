@@ -6,18 +6,16 @@ import { GetBalance } from "../../api/getBalance";
 import { TechnicalWarriorTrader } from "./technicalWarriorTrader";
 import { TrendHunterTrader } from "./trendHunterTrader";
 import { GameManager } from "./gameManager";
-import fs from "fs";
-import path from "path";
 
 export class CharacterTraderFactory {
-    static path = require('path');
-    static filePath: string = path.join(__dirname, '../..', 'secret', 'secret.json');
-    private static readonly secretData = JSON.parse(fs.readFileSync(CharacterTraderFactory.filePath, 'utf8'));
-    public static readonly key: string = CharacterTraderFactory.secretData.key;
-    public static readonly secret: string = CharacterTraderFactory.secretData.secret;
+    private static readonly USE_MOCK = process.env.USE_MOCK === 'true' || false;
     
     public static createTrader(traderName: string): Trader {
-        const auth = new Authorize(this.key, this.secret);
+        const auth = new Authorize(
+            process.env.API_KEY || 'mock-key',
+            process.env.API_SECRET || 'mock-secret'
+        );
+        
         const childOrder = new ChildOrder();
         const getChildOrders = new GetChildOrders(auth);
         
@@ -33,7 +31,11 @@ export class CharacterTraderFactory {
     }
     
     public static createGameManager(): GameManager {
-        const auth = new Authorize(this.key, this.secret);
+        const auth = new Authorize(
+            process.env.API_KEY || 'mock-key',
+            process.env.API_SECRET || 'mock-secret'
+        );
+        
         const childOrder = new ChildOrder();
         const getChildOrders = new GetChildOrders(auth);
         
