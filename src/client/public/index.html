@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTradingBot - キャラクター選択</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AutoTradingBot</h1>
+            <h2>トレーダーキャラクター選択</h2>
+        </header>
+        
+        <main>
+            <div class="character-selection">
+                <div id="character-list" class="character-grid">
+                    <!-- キャラクターカードがJSで動的に挿入されます -->
+                </div>
+            </div>
+            
+            <div class="character-details" id="character-details">
+                <h3>キャラクター詳細</h3>
+                <div id="selected-character-info">
+                    <p>左側からキャラクターを選択してください</p>
+                </div>
+                <div class="action-buttons">
+                    <button id="select-character-btn" class="btn btn-primary" disabled>このキャラクターを選択</button>
+                    <button id="start-battle-btn" class="btn btn-secondary" disabled>バトル開始</button>
+                </div>
+            </div>
+        </main>
+        
+        <div id="leaderboard" class="leaderboard">
+            <h3>リーダーボード</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>キャラクター</th>
+                        <th>レベル</th>
+                        <th>勝率</th>
+                        <th>総利益</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- リーダーボードデータがJSで動的に挿入されます -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="battle-arena" class="battle-arena hidden">
+            <h3>バトルアリーナ</h3>
+            <div class="battle-container">
+                <div class="trader trader-left" id="trader-left">
+                    <!-- 左側のトレーダー情報 -->
+                </div>
+                <div class="vs">VS</div>
+                <div class="trader trader-right" id="trader-right">
+                    <!-- 右側のトレーダー情報 -->
+                </div>
+            </div>
+            <div class="battle-log" id="battle-log">
+                <!-- バトルログがJSで動的に挿入されます -->
+            </div>
+            <button id="close-battle-btn" class="btn btn-secondary">バトルを終了</button>
+        </div>
+        
+        <footer>
+            <p>© 2025 AutoTradingBot - ゲームトレーディングシステム</p>
+        </footer>
+    </div>
+    
+    <script src="../js/characterSelection.js"></script>
+</body>
+</html>
