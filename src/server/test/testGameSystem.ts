@@ -5,6 +5,6 @@ console.log("ゲームシステムのモックテストを開始します...");
 const mockGame = new MockGameMain();
 mockGame.start().then(() => {
     console.log("モックテスト完了！");
-}).catch(error => {
+}).catch((error: Error) => {
     console.error("テスト中にエラーが発生しました:", error);
 });
