@@ -12,7 +12,8 @@
     "copy": "rsync -av src/server/secret/secret.json dist/secret/",
     "build": "npm run compile && npm run copy",
     "start": "node .",
-    "test": "jest"
+    "test": "jest",
+    "test:game": "ts-node src/server/test/testGameSystem.ts"
   },
   "keywords": [],
   "author": "",
