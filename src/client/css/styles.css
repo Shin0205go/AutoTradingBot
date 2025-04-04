@@ -225,6 +225,73 @@ h1, h2, h3 {
     text-align: center;
 }
 
+/* Market Price Styles */
+.market-price-container {
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.market-price-container h4 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.market-price-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.price-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 12px;
+    min-width: 150px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.price-label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.price-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price-value.bid {
+    color: var(--accent-color);
+}
+
+.price-value.ask {
+    color: var(--secondary-color);
+}
+
+.price-value.last {
+    color: var(--primary-color);
+}
+
+.price-loading {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+}
+
+.price-timestamp {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 10px;
+}
+
 .trader-status {
     display: flex;
     flex-direction: column;

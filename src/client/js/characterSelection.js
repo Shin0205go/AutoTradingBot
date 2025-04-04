@@ -29,6 +29,7 @@ const ENDPOINTS = {
     SELECT_CHARACTER: `${API_BASE_URL}/select-character`,
     LEADERBOARD: `${API_BASE_URL}/leaderboard`,
     SIMULATE_TRADE: `${API_BASE_URL}/simulate-trade`,
+    MARKET_PRICE: `${API_BASE_URL}/market-price`,
 };
 
 const CHARACTER_ICONS = {
@@ -196,6 +197,66 @@ function renderLeaderboard() {
     });
 }
 
+async function fetchMarketPrice() {
+    try {
+        const response = await fetch(ENDPOINTS.MARKET_PRICE);
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+        
+        const priceData = await response.json();
+        renderMarketPrice(priceData);
+        
+        return priceData;
+    } catch (error) {
+        console.error('市場価格の取得中にエラーが発生しました:', error);
+        
+        const mockPriceData = {
+            product_code: "BTC_JPY",
+            timestamp: new Date().toISOString(),
+            best_bid: 4950000,
+            best_ask: 5050000,
+            ltp: 5000000,
+            volume: 250
+        };
+        
+        renderMarketPrice(mockPriceData);
+        return mockPriceData;
+    }
+}
+
+function renderMarketPrice(priceData) {
+    const marketPriceInfoEl = document.getElementById('market-price-info');
+    if (!marketPriceInfoEl) return;
+    
+    const timestamp = new Date(priceData.timestamp);
+    const formattedTime = formatDate(timestamp);
+    
+    marketPriceInfoEl.innerHTML = `
+        <div class="market-price-info">
+            <div class="price-card">
+                <div class="price-label">現在価格</div>
+                <div class="price-value last">${formatCurrency(priceData.ltp)}</div>
+            </div>
+            <div class="price-card">
+                <div class="price-label">買値 (Bid)</div>
+                <div class="price-value bid">${formatCurrency(priceData.best_bid)}</div>
+            </div>
+            <div class="price-card">
+                <div class="price-label">売値 (Ask)</div>
+                <div class="price-value ask">${formatCurrency(priceData.best_ask)}</div>
+            </div>
+            <div class="price-card">
+                <div class="price-label">24時間取引量</div>
+                <div class="price-value">${priceData.volume.toFixed(2)} BTC</div>
+            </div>
+        </div>
+        <div class="price-timestamp">最終更新: ${formattedTime}</div>
+    `;
+}
+
+let marketPriceInterval = null;
+
 async function startTrading() {
     if (!selectedCharacterId || tradingInProgress) return;
     
@@ -208,6 +269,14 @@ async function startTrading() {
     currentLevel = currentCharacter.level || 1;
     currentXP = 0;
     xpToNextLevel = currentLevel * 1000;
+    
+    await fetchMarketPrice();
+    
+    if (marketPriceInterval) {
+        clearInterval(marketPriceInterval);
+    }
+    
+    marketPriceInterval = setInterval(fetchMarketPrice, 30000);
     
     updateTraderInfo();
     
@@ -426,6 +495,11 @@ function setupEventListeners() {
     closeTradingBtn.addEventListener('click', () => {
         tradingSimulatorEl.classList.add('hidden');
         tradingInProgress = false;
+        
+        if (marketPriceInterval) {
+            clearInterval(marketPriceInterval);
+            marketPriceInterval = null;
+        }
     });
     
     const historyFilter = document.getElementById('history-filter');

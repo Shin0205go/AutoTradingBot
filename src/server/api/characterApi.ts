@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { CharacterTraderFactory } from '../trader/character/characterTraderFactory';
 import { GameManager } from '../trader/character/gameManager';
+import { MockAuthorize } from './mock/mockAuthorize';
 
 const router = express.Router();
 
@@ -58,6 +59,37 @@ router.post('/select-character', (req, res) => {
     } catch (error) {
         console.error('Error selecting character:', error);
         res.status(500).json({ error: 'Failed to select character' });
+    }
+});
+
+router.get('/market-price', (req, res) => {
+    try {
+        const mockAuth = new MockAuthorize();
+        const basePrice = 5000000 + (Math.random() - 0.5) * 200000; // Random price around 5,000,000 JPY
+        const lastPrice = Math.floor(basePrice);
+        const bidPrice = Math.floor(basePrice * 0.998); // 0.2% lower
+        const askPrice = Math.floor(basePrice * 1.002); // 0.2% higher
+        const volume24h = Math.floor(100 + Math.random() * 500); // Random volume between 100-600 BTC
+        
+        const priceData = {
+            product_code: "BTC_JPY",
+            timestamp: new Date().toISOString(),
+            tick_id: Date.now(),
+            best_bid: bidPrice,
+            best_ask: askPrice,
+            best_bid_size: 0.5 + Math.random() * 2,
+            best_ask_size: 0.5 + Math.random() * 2,
+            total_bid_depth: 2000 + Math.random() * 5000,
+            total_ask_depth: 2000 + Math.random() * 5000,
+            ltp: lastPrice,
+            volume: volume24h,
+            volume_by_product: volume24h
+        };
+        
+        res.json(priceData);
+    } catch (error) {
+        console.error('Error fetching market price:', error);
+        res.status(500).json({ error: 'Failed to fetch market price' });
     }
 });
 
