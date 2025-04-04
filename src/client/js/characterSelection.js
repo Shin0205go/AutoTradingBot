@@ -3,25 +3,31 @@ const characterListEl = document.getElementById('character-list');
 const characterDetailsEl = document.getElementById('character-details');
 const selectedCharacterInfoEl = document.getElementById('selected-character-info');
 const selectCharacterBtn = document.getElementById('select-character-btn');
-const startBattleBtn = document.getElementById('start-battle-btn');
+const startTradingBtn = document.getElementById('start-trading-btn');
 const leaderboardBodyEl = document.getElementById('leaderboard-body');
-const battleArenaEl = document.getElementById('battle-arena');
-const traderLeftEl = document.getElementById('trader-left');
-const traderRightEl = document.getElementById('trader-right');
-const battleLogEl = document.getElementById('battle-log');
-const closeBattleBtn = document.getElementById('close-battle-btn');
+const tradingSimulatorEl = document.getElementById('trading-simulator');
+const traderInfoEl = document.getElementById('trader-info');
+const levelBarEl = document.getElementById('level-bar');
+const levelInfoEl = document.getElementById('level-info');
+const tradingLogEl = document.getElementById('trading-log');
+const simulateTradeBtn = document.getElementById('simulate-trade-btn');
+const closeTradingBtn = document.getElementById('close-trading-btn');
 
 let characters = [];
 let selectedCharacterId = null;
 let leaderboard = [];
-let battleInProgress = false;
+let tradingInProgress = false;
+let currentCharacter = null;
+let currentLevel = 1;
+let currentXP = 0;
+let xpToNextLevel = 1000;
 
 const API_BASE_URL = '/api';
 const ENDPOINTS = {
     CHARACTERS: `${API_BASE_URL}/characters`,
     SELECT_CHARACTER: `${API_BASE_URL}/select-character`,
     LEADERBOARD: `${API_BASE_URL}/leaderboard`,
-    START_BATTLE: `${API_BASE_URL}/start-battle`,
+    SIMULATE_TRADE: `${API_BASE_URL}/simulate-trade`,
 };
 
 const CHARACTER_ICONS = {
@@ -132,7 +138,7 @@ function selectCharacter(characterId) {
     renderCharacterDetails(character);
     
     selectCharacterBtn.disabled = false;
-    startBattleBtn.disabled = false;
+    startTradingBtn.disabled = false;
 }
 
 function renderCharacterDetails(character) {
@@ -189,98 +195,135 @@ function renderLeaderboard() {
     });
 }
 
-async function startBattle() {
-    if (!selectedCharacterId || battleInProgress) return;
+async function startTrading() {
+    if (!selectedCharacterId || tradingInProgress) return;
     
-    battleInProgress = true;
-    battleArenaEl.classList.remove('hidden');
+    tradingInProgress = true;
+    tradingSimulatorEl.classList.remove('hidden');
     
-    const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
-    const opponents = characters.filter(c => c.id !== selectedCharacterId);
-    const opponent = opponents[Math.floor(Math.random() * opponents.length)];
+    currentCharacter = characters.find(c => c.id === selectedCharacterId);
+    if (!currentCharacter) return;
     
-    traderLeftEl.innerHTML = createTraderBattleHTML(selectedCharacter);
-    traderRightEl.innerHTML = createTraderBattleHTML(opponent);
-    battleLogEl.innerHTML = '';
+    currentLevel = currentCharacter.level || 1;
+    currentXP = 0;
+    xpToNextLevel = currentLevel * 1000;
     
-    await simulateBattle(selectedCharacter, opponent);
+    updateTraderInfo();
     
-    battleInProgress = false;
+    updateLevelBar();
+    
+    tradingLogEl.innerHTML = '';
+    
+    addTradingLogEntry(`${currentCharacter.name}のトレードシミュレーションを開始します。`, true);
+    await delay(1000);
+    addTradingLogEntry(`現在のレベル: ${currentLevel}`, false);
+    await delay(500);
+    addTradingLogEntry(`次のレベルまでに必要な経験値: ${xpToNextLevel}XP`, false);
+    await delay(500);
+    addTradingLogEntry(`トレードを開始するには「トレードシミュレーション」ボタンをクリックしてください。`, true);
 }
 
-function createTraderBattleHTML(character) {
-    const icon = CHARACTER_ICONS[character.name] || '👤';
+function updateTraderInfo() {
+    const icon = CHARACTER_ICONS[currentCharacter.name] || '👤';
     
-    return `
-        <div class="battle-trader-icon">${icon}</div>
-        <div class="battle-trader-name">${character.name}</div>
-        <div class="battle-trader-level">レベル ${character.level}</div>
-        <div class="battle-trader-stats">
-            <div>勝率: ${character.winRate}%</div>
-            <div>総利益: ${formatCurrency(character.totalProfit)}</div>
+    traderInfoEl.innerHTML = `
+        <div class="trader-icon">${icon}</div>
+        <div class="trader-name">${currentCharacter.name}</div>
+        <div class="trader-level">レベル ${currentLevel}</div>
+        <div class="trader-stats">
+            <div>取引スタイル: ${currentCharacter.tradingStyle || '不明'}</div>
+            <div>特殊能力: ${currentCharacter.specialAbility || 'なし'}</div>
         </div>
     `;
 }
 
-async function simulateBattle(trader1, trader2) {
-    addBattleLogEntry(`バトル開始: ${trader1.name} vs ${trader2.name}`);
-    
-    const rounds = 3;
-    let trader1Score = 0;
-    let trader2Score = 0;
-    
-    for (let i = 1; i <= rounds; i++) {
-        addBattleLogEntry(`ラウンド ${i} 開始...`, false);
-        
-        await delay(1000);
-        
-        const trader1Profit = Math.floor(Math.random() * 50000) - 10000;
-        const trader2Profit = Math.floor(Math.random() * 50000) - 10000;
-        
-        addBattleLogEntry(`${trader1.name}の取引結果: ${formatCurrency(trader1Profit)}`, false);
-        addBattleLogEntry(`${trader2.name}の取引結果: ${formatCurrency(trader2Profit)}`, false);
-        
-        if (trader1Profit > trader2Profit) {
-            trader1Score++;
-            addBattleLogEntry(`ラウンド ${i} の勝者: ${trader1.name}!`, true);
-        } else if (trader2Profit > trader1Profit) {
-            trader2Score++;
-            addBattleLogEntry(`ラウンド ${i} の勝者: ${trader2.name}!`, true);
-        } else {
-            addBattleLogEntry(`ラウンド ${i} は引き分けです!`, true);
-        }
-        
-        if (Math.random() > 0.7) {
-            const activatingTrader = Math.random() > 0.5 ? trader1 : trader2;
-            addBattleLogEntry(`${activatingTrader.name}の特殊能力が発動しました!`, true);
-        }
-        
-        await delay(1500);
-    }
-    
-    let winner;
-    if (trader1Score > trader2Score) {
-        winner = trader1;
-    } else if (trader2Score > trader1Score) {
-        winner = trader2;
-    }
-    
-    if (winner) {
-        addBattleLogEntry(`バトル終了! 勝者は ${winner.name} です!`, true);
-    } else {
-        addBattleLogEntry(`バトル終了! 引き分けです!`, true);
-    }
+function updateLevelBar() {
+    const percentage = Math.min((currentXP / xpToNextLevel) * 100, 100);
+    levelBarEl.style.width = `${percentage}%`;
+    levelInfoEl.textContent = `レベル ${currentLevel} (${currentXP}/${xpToNextLevel} XP)`;
 }
 
-function addBattleLogEntry(text, highlight = false) {
+async function simulateTrade() {
+    if (!currentCharacter || !tradingInProgress) return;
+    
+    addTradingLogEntry(`トレードシミュレーション実行中...`, false);
+    await delay(1000);
+    
+    const baseAmount = 10000 + (currentLevel * 5000);
+    const volatility = 0.8;
+    const profit = Math.floor(baseAmount * (1 + ((Math.random() * 2 - 1) * volatility)));
+    
+    const specialAbilityChance = 0.1 + (currentLevel * 0.05);
+    const specialAbilityActivated = Math.random() < specialAbilityChance;
+    
+    let finalProfit = profit;
+    if (specialAbilityActivated) {
+        const bonusMultiplier = 1.5;
+        finalProfit = Math.floor(profit * bonusMultiplier);
+        await delay(800);
+        addTradingLogEntry(`${currentCharacter.name}の特殊能力が発動しました！`, true);
+        await delay(500);
+    }
+    
+    const isProfitable = finalProfit > 0;
+    const resultClass = isProfitable ? 'profit' : 'loss';
+    
+    await delay(800);
+    addTradingLogEntry(`トレード結果: ${formatCurrency(finalProfit)}`, false, resultClass);
+    
+    let xpGained = 0;
+    if (isProfitable) {
+        xpGained = Math.floor(finalProfit / 100); // 利益100円ごとに1XP
+        await delay(800);
+        addTradingLogEntry(`+${xpGained} XP獲得！`, true, 'profit');
+    } else {
+        xpGained = Math.floor(Math.abs(finalProfit) / 500); // 損失500円ごとに1XP
+        await delay(800);
+        addTradingLogEntry(`+${xpGained} XP獲得！（失敗からの学び）`, false);
+    }
+    
+    currentXP += xpGained;
+    
+    if (currentXP >= xpToNextLevel) {
+        await levelUp();
+    }
+    
+    updateLevelBar();
+}
+
+async function levelUp() {
+    currentXP -= xpToNextLevel;
+    currentLevel++;
+    xpToNextLevel = currentLevel * 1000; // レベルが上がるごとに必要XPが増加
+    
+    const levelUpNotification = document.createElement('div');
+    levelUpNotification.className = 'level-up-notification';
+    levelUpNotification.textContent = `レベルアップ！ ${currentCharacter.name}はレベル${currentLevel}になりました！`;
+    
+    tradingLogEl.appendChild(levelUpNotification);
+    tradingLogEl.scrollTop = tradingLogEl.scrollHeight;
+    
+    await delay(1000);
+    addTradingLogEntry(`レベルアップにより取引スキルが向上しました！`, true, 'profit');
+    await delay(500);
+    addTradingLogEntry(`次のレベルまでに必要な経験値: ${xpToNextLevel}XP`, false);
+    
+    updateTraderInfo();
+    
+}
+
+function addTradingLogEntry(text, highlight = false, className = '') {
     const entry = document.createElement('div');
-    entry.className = 'battle-log-entry';
+    entry.className = 'trading-log-entry';
     if (highlight) {
         entry.classList.add('highlight');
     }
+    if (className) {
+        entry.classList.add(className);
+    }
     entry.textContent = text;
-    battleLogEl.appendChild(entry);
-    battleLogEl.scrollTop = battleLogEl.scrollHeight;
+    tradingLogEl.appendChild(entry);
+    tradingLogEl.scrollTop = tradingLogEl.scrollHeight;
 }
 
 function setupEventListeners() {
@@ -295,11 +338,13 @@ function setupEventListeners() {
         }
     });
     
-    startBattleBtn.addEventListener('click', startBattle);
+    startTradingBtn.addEventListener('click', startTrading);
     
-    closeBattleBtn.addEventListener('click', () => {
-        battleArenaEl.classList.add('hidden');
-        battleInProgress = false;
+    simulateTradeBtn.addEventListener('click', simulateTrade);
+    
+    closeTradingBtn.addEventListener('click', () => {
+        tradingSimulatorEl.classList.add('hidden');
+        tradingInProgress = false;
     });
 }
 

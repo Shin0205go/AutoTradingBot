@@ -209,8 +209,8 @@ h1, h2, h3 {
     background-color: #f9f9f9;
 }
 
-/* Battle arena styles */
-.battle-arena {
+/* Trading simulator styles */
+.trading-simulator {
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -218,36 +218,55 @@ h1, h2, h3 {
     margin-bottom: 30px;
 }
 
-.battle-arena h3 {
+.trading-simulator h3 {
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.battle-container {
+.trader-status {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 30px;
 }
 
-.trader {
-    flex: 1;
+.trader-info {
     padding: 20px;
     background-color: var(--light-color);
     border-radius: var(--border-radius);
     text-align: center;
+    margin-bottom: 20px;
 }
 
-.vs {
-    font-size: 2rem;
+.level-progress {
+    padding: 15px;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+}
+
+.level-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.level-bar {
+    height: 100%;
+    background-color: var(--secondary-color);
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+}
+
+.level-info {
+    text-align: center;
     font-weight: bold;
-    margin: 0 20px;
-    color: var(--accent-color);
 }
 
-.battle-log {
+.trading-log {
     background-color: var(--light-color);
     border-radius: var(--border-radius);
     padding: 15px;
@@ -256,19 +275,47 @@ h1, h2, h3 {
     margin-bottom: 20px;
 }
 
-.battle-log-entry {
+.trading-log-entry {
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-.battle-log-entry:last-child {
+.trading-log-entry:last-child {
     border-bottom: none;
 }
 
-.battle-log-entry.highlight {
+.trading-log-entry.profit {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.trading-log-entry.loss {
     color: var(--accent-color);
     font-weight: bold;
+}
+
+.trading-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.level-up-notification {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 .hidden {

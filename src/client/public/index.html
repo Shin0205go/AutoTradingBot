@@ -27,7 +27,7 @@
                 </div>
                 <div class="action-buttons">
                     <button id="select-character-btn" class="btn btn-primary" disabled>このキャラクターを選択</button>
-                    <button id="start-battle-btn" class="btn btn-secondary" disabled>バトル開始</button>
+                    <button id="start-trading-btn" class="btn btn-secondary" disabled>トレード開始</button>
                 </div>
             </div>
         </main>
@@ -50,21 +50,26 @@
             </table>
         </div>
         
-        <div id="battle-arena" class="battle-arena hidden">
-            <h3>バトルアリーナ</h3>
-            <div class="battle-container">
-                <div class="trader trader-left" id="trader-left">
-                    <!-- 左側のトレーダー情報 -->
+        <div id="trading-simulator" class="trading-simulator hidden">
+            <h3>トレードシミュレーター</h3>
+            <div class="trader-status">
+                <div class="trader-info" id="trader-info">
+                    <!-- トレーダー情報 -->
                 </div>
-                <div class="vs">VS</div>
-                <div class="trader trader-right" id="trader-right">
-                    <!-- 右側のトレーダー情報 -->
+                <div class="level-progress">
+                    <div class="level-bar-container">
+                        <div class="level-bar" id="level-bar"></div>
+                    </div>
+                    <div class="level-info" id="level-info">レベル 1 (0/1000 XP)</div>
                 </div>
             </div>
-            <div class="battle-log" id="battle-log">
-                <!-- バトルログがJSで動的に挿入されます -->
+            <div class="trading-log" id="trading-log">
+                <!-- トレードログがJSで動的に挿入されます -->
             </div>
-            <button id="close-battle-btn" class="btn btn-secondary">バトルを終了</button>
+            <div class="trading-controls">
+                <button id="simulate-trade-btn" class="btn btn-primary">トレードシミュレーション</button>
+                <button id="close-trading-btn" class="btn btn-secondary">シミュレーションを終了</button>
+            </div>
         </div>
         
         <footer>
