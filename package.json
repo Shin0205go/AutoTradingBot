@@ -9,7 +9,7 @@
     "clean": "rimraf dist/*",
     "tsc": "tsc",
     "compile": "tsc",
-    "copy": "rsync -av src/server/secret/secret.json dist/secret/",
+    "copy": "mkdir -p dist/secret && (test -f src/server/secret/secret.json && rsync -av src/server/secret/secret.json dist/secret/ || echo '{\"key\":\"\",\"secret\":\"\"}' > dist/secret/secret.json)",
     "build": "npm run compile && npm run copy",
     "start": "node .",
     "test": "jest",
